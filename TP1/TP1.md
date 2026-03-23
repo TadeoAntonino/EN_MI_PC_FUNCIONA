@@ -69,9 +69,9 @@ Se analiza el rendimiento de distintos procesadores ejecutando la compilación d
 
 | Procesador    | Núcleos | Tiempo (s) | Rendimiento (1/tiempo) |
 | ------------- | ------- | ---------- | ---------------------- |
-| i5-13600K     | 14      | 72         | 0.0139                 |
-| Ryzen 9 5900X | 12      | 76         | 0.0132                 |
-| Ryzen 9 7950X | 16      | 50         | 0.0200                 |
+| i5-13600K     | 14      | 56         | 0.0179                 |
+| Ryzen 9 5900X | 12      | 60         | 0.0167                 |
+| Ryzen 9 7950X | 16      | 45         | 0.0222                 |
 
 ## Análisis
 
@@ -80,7 +80,8 @@ Se analiza el rendimiento de distintos procesadores ejecutando la compilación d
 - El **Ryzen 9 5900X** rinde ligeramente peor que el i5 en este caso.
 
 Conclusión:  
-El rendimiento no depende solo de la cantidad de núcleos, sino también de la arquitectura y frecuencia.
+La cantidad de núcleos es importante pero no determina un mejor rendimiento, IPC y frecuencia pueden compensar menor cantidad de núcleos. La arquitectura define mucho sobre el rendimiento, arquitecturas mas modernas son mas eficientes (uso de RAM DDR5 por ejemplo).
+En conclusión, para compilar el kernel el rendimiento depende de núcleos (paralelismo), IPC (frecuencia) y memoria (latencia/BW); no es solo una cuestión de más núcleos = más rápido.
 
 ---
 
@@ -95,16 +96,16 @@ Tomando como referencia el i5:
 | Procesador    | Speedup |
 | ------------- | ------- |
 | i5-13600K     | 1.00    |
-| Ryzen 9 5900X | 0.95    |
-| Ryzen 9 7950X | 1.44    |
+| Ryzen 9 5900X | 0.93    |
+| Ryzen 9 7950X | 1.24    |
 
 ## Análisis
 
-- El **Ryzen 9 7950X** es 1.44 veces más rápido que el i5.
+- El **Ryzen 9 7950X** es 1.24 veces más rápido que el i5.
 - El **5900X** es levemente más lento.
 
 Conclusión:  
-El speedup permite comparar mejoras relativas entre sistemas.
+El speedup permite comparar mejoras relativas entre sistemas, lo cual es importante a la hora de determinar que sistema es mejor o conviene según el caso de uso.
 
 ---
 
@@ -116,24 +117,25 @@ Eficiencia = Speedup / número de núcleos
 
 | Procesador    | Núcleos | Eficiencia |
 | ------------- | ------- | ---------- |
-| i5-13600K     | 14      | 0.0714     |
-| Ryzen 9 5900X | 12      | 0.0789     |
-| Ryzen 9 7950X | 16      | 0.0900     |
+| i5-13600K     | 14      | 0.0128     |
+| Ryzen 9 5900X | 12      | 0.0139     |
+| Ryzen 9 7950X | 16      | 0.0139     |
 
 ## Análisis
 
-- El **7950X** aprovecha mejor sus núcleos.
+- El **AMD** aprovecha mejor sus núcleos.
 - Mayor eficiencia implica mejor paralelización.
+- **Intel** por su parte compensa con mejor IPC.
 
 ---
 
 ## 🔹 Eficiencia por costo
 
-| Procesador    | Costo | Eficiencia |
-| ------------- | ----- | ---------- |
-| i5-13600K     | 284   | 0.00352    |
-| Ryzen 9 5900X | 278   | 0.00341    |
-| Ryzen 9 7950X | 549   | 0.00262    |
+| Procesador    | Costo | Eficiencia   |
+| ------------- | ----- | ------------ |
+| i5-13600K     | 284   | 0.0000597    |
+| Ryzen 9 5900X | 278   | 0.0000596    |
+| Ryzen 9 7950X | 549   | 0.0000404    |
 
 ## Análisis
 
