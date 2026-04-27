@@ -12,6 +12,9 @@
 https://github.com/IgnacioQuintana57/EN_MI_PC_FUNCIONA
 
 
+---
+
+
 ### Introducción
 
 
@@ -101,4 +104,42 @@ Ventajas de su utilización:
     Qué es: Es la dirección de memoria física (o virtual) donde tu programa espera ser cargado en la RAM al momento de ejecutarse.
 
     Por qué es necesaria: En programación normal, el sistema operativo (Windows/Linux) carga tu programa en cualquier parte libre de la RAM y ajusta las direcciones por ti. Pero en bare-metal no hay sistema operativo. La BIOS o UEFI carga tu código en un lugar específico de la memoria (por ejemplo, los bootloaders clásicos siempre se cargan en 0x7C00). El linker necesita saber esto para calcular correctamente los saltos (jumps) y dónde buscar las variables. Si le mientes al linker, tu programa buscará cosas en la memoria equivocada y colapsará.
+
+---
+
+#### aca va lo del pendrive
+
+---
+
+#### ¿Para qué se utiliza --oformat binary?
+
+    Se utiliza para pedirle al linker que elimine todas las cabeceras, tablas y metadatos del archivo final, y en su lugar genere un 'flat binary'. Este binario contiene única y exclusivamente las instrucciones de máquina crudas y los datos estáticos, sin ningún tipo de formato o envoltura.
+
+    Si no usaramos --oformat binary y le pasamos a la BIOS un archivo ELF normal, el procesador tomaría el texto de la cabecera (metadatos) e intentaría "ejecutarlos" como si fueran comandos. Como resultado, la computadora colapsaría o se reiniciaría instantáneamente.
+
+
+
+---
+
+
+### Desafío Modo Protegido
+
+Se nos pidió hacer un código en assembler que pase a modo protegido. El programa al iniciar configura el procesador para saltar al Modo Protegido de 32 bits, carga la tabla de memoria (GDT) y entra en un bucle infinito.
+
+El sistema operativo bare-metal es estable. QEMU se queda "congelado" esperando instrucciones para siempre como se observa en la siguiente imagen:
+
+![QEMU](/EN_MI_PC_FUNCIONA/TP3/assets/qemu_andando.png)
+
+El programa entra a Modo Protegido igual que antes, pero justo antes de entrar al bucle infinito, intenta escribir una letra 'A' en la memoria.
+
+Como ahora modificamos la GDT para que la memoria sea estrictamente de "Solo Lectura", el procesador intercepta la escritura, detecta una violación de seguridad y lanza un error. Al no saber cómo manejar el error, la CPU entra en pánico (Fallo Triple) y reinicia la máquina a la fuerza. QEMU parpadea infinitamente en un ciclo de reinicios como se observa en el gif:
+
+![QEMU](/EN_MI_PC_FUNCIONA/TP3/assets/tripleFaultE2E.gif)
+
+En Modo Protegido, los registros de segmento (como CS, DS, ES) ya no se cargan con las direcciones base físicas de la memoria (como se hacía en Modo Real multiplicando por 16). En su lugar, se cargan con Selectores de Segmento (Segment Selectors). En nuestro código, CS se carga con el valor 0x08 y los registros de datos con 0x10.
+
+¿Por qué?
+Porque la información que describe a un segmento en Modo Protegido (dirección base de 32 bits, límite, permisos de lectura/escritura, y niveles de privilegio) ocupa 8 bytes por entrada en la GDT. Esta cantidad de información es demasiado grande para caber en un registro de segmento de 16 bits.
+Por lo tanto, los valores como 0x08 o 0x10 actúan simplemente como un índice o puntero. Le indican al procesador en qué desplazamiento exacto (offset) dentro de la GDT debe buscar el descriptor correspondiente para aplicar las reglas de memoria y seguridad antes de ejecutar una instrucción.
+
 
