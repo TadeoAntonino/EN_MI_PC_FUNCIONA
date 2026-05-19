@@ -361,7 +361,14 @@ Es cuando un proceso intenta acceder a una dirección de memoria que no le perte
 
 En un módulo de kernel en cambio, si pasa algo así no hay nadie que lo atrape limpiamente. Se puede corromper memoria del kernel y causar un kernel panic que tira todo el sistema.
 
-### 8. Firmado de un módulo de kernel (HACER)
+### 8. Firmado de un módulo de kernel
+El firmado de un módulo de kernel consiste en agregar una firma digital al archivo .ko, para que el kernel pueda verificar su integridad y su origen antes de cargarlo. No significa que el módulo sea “seguro” por sí mismo, sino que el sistema puede comprobar que fue firmado con una clave reconocida y que no fue modificado después de la firma.
+
+Esto es importante porque un módulo de kernel no se ejecuta como un programa común en espacio de usuario, sino dentro del espacio del kernel. Por lo tanto, tiene privilegios muy altos sobre el sistema. Un error o código malicioso dentro de un módulo puede afectar directamente al kernel completo, no solamente a un proceso aislado. Esta idea se relaciona con lo visto en el TP sobre la diferencia entre programas y módulos: los módulos forman parte del kernel y comparten su espacio de ejecución.
+```bash
+mimodulo: module verification failed: signature and/or required key missing - tainting kernel
+```
+
 
 ### 9. Evidencia de compilación, carga y descarga del módulo
 
